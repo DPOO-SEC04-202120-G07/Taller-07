@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -138,6 +139,92 @@ public class CategoriaTest {
 			assertEquals(1, nodosDespues-nodosAntes);
 			
 		}
+		
+	@Test //Se debe retornar un objeto de tipo nodo (siendo lá única alternativa a nulo), puesto que se está buscando un objeto existente
+	public void testBuscarNodo() {
+		
+		String pIdExistente = "111";
+		assertNotNull(categoria.buscarNodo(pIdExistente));
+	}
+	
+	@Test //Debería darse un valor esperado en dado caso que todos los cálculos hayan sido realizados correctamente
+	public void testDarValorVentas() {
+		
+		int valorEsperado = 1898900 + 2*(2499000); //Valor de venta de 1 ED 55" UHD Smart TV + 2 LED Curvo 49" Smart TV 4K Ultra HD
+		assertEquals(valorEsperado, categoria.darValorVentas());		
+	}
+	
+	@Test //Debería retornarse un objeto no nulo, puesto que se ha eliminado un nodo existente
+	public void testEliminarNodo() {
+		String pIdExistente = "1111";
+
+		assertNotNull(categoria.eliminarNodo(pIdExistente));
+	}
+	
+	@Test //Se debería encontrar un objeto no nulo (TV en este caso), pues el objeto fue cargado anteriormente
+	public void testBuscarProducto() {
+
+		String pIdProductoExist = "31759941"; //Id de LED 49" Smart TV Full HD
+		assertNotNull(categoria.buscarProducto(pIdProductoExist));
+		
+	}
+	
+	@Test // Se debería encontrar un objeto no nulo, pues la marca ingresada tiene un padre (la categoría)
+	public void testBuscarPadre() {
+		String pIdPadreExist = "1112"; //Marca LG
+		assertNotNull(categoria.buscarPadre(pIdPadreExist));
+	}
+	
+	@Test //Se debería retornar el número de productos cargados en el archivo de prueba (5)
+	public void testDarProductos() {
+		int numProductosCargados = 5;
+		assertEquals(numProductosCargados, categoria.darProductos().size());
+	}
+	
+	@Test //Se debería retornar el número de marcas cargadas en el archivo de prueba (2)
+	public void testDarMarcas() {
+		int numMarcas = 2;
+		assertEquals(numMarcas, categoria.darMarcas().size());
+	}
+	
+	@Test //Se debería retornar una lista ordenada por preorden de los objetos cargados
+	public void testDarPreorden() {
+		
+		List<String> listaEsperada = new ArrayList<String>();
+		listaEsperada.add("Televisores");
+		listaEsperada.add("SAMSUNG");
+		listaEsperada.add("LG");
+		
+		List<NodoAlmacen> listaReal = categoria.darPreorden();
+		
+		int count = 0;
+		for(NodoAlmacen nodo : listaReal) {
+			String nombre_nodo = nodo.darNombre();
+			assertEquals(listaEsperada.get(count), nombre_nodo);
+			count+=1;
+		}
+	}
+	
+	@Test //Se debería retornar una lista ordenada por posorden de los objetos cargados
+	public void testDarPosorden() {
+
+		List<String> listaEsperada = new ArrayList<String>();
+		listaEsperada.add("SAMSUNG");
+		listaEsperada.add("LG");
+		listaEsperada.add("Televisores");
+
+		
+		List<NodoAlmacen> listaReal = categoria.darPosorden();
+		
+		int count = 0;
+		for(NodoAlmacen nodo : listaReal) {
+			String nombre_nodo = nodo.darNombre();
+			assertEquals(listaEsperada.get(count), nombre_nodo);
+			count+=1;
+		}
+		
+		
+	}
 		
 		
 		
