@@ -231,6 +231,130 @@ public class CategoriaTest {
 		
 	}
 	
+	@Nested
+	// Test que prueba el funcionamiento UNITARIO de cada método cuando
+	// la categoría ES CREADA CON HIJOS pero TODOS LOS METODOS SON CASOS FALLIDOS
+	class CategoriaFallidaTest {
+
+		@BeforeEach //Se crea una nueva categoria CON HIJOS basada en un archivo de prueba
+		public void setUpEscenarioConHijos() throws AlmacenException, IOException {
+			
+			File archivoCatTest = new File("./test/testData/categoriaTest.txt");
+			
+			// Se usa el constructor que SÍ crea hijos.
+			 BufferedReader in = new BufferedReader( new FileReader( archivoCatTest ) );			
+			 categoria = new Categoria( in.readLine( ), in );
+		}
+		
+		
+		@Test // Debido a que el nodo que se quiere agregar ya existe se tirara una excepcion
+		// Esto provocara que este test de un caso fallido
+		public void testAgregarNodo() {
+			String pIdPadre = "111";
+			String pTipo = "Categoría";
+			String pIdentificador = "1112";
+			String pNombre = "Fallida";
+			
+			assertDoesNotThrow(() -> categoria.agregarNodo(pIdPadre, pTipo, pIdentificador, pNombre));
+			
+		}
+			
+		@Test //Se retornara nulo debido a que se esta buscando un elemento no existente
+		//Esto provocara que el test de un caso fallido
+		public void testBuscarNodo() {
+			
+			String pIdExistente = "INEXISTENTE";
+			assertNotNull(categoria.buscarNodo(pIdExistente));
+		}
+		
+		@Test //El valor esperado es un valor aleatorio que no corresponde al real
+		//Esto provocara que el test de un caso fallido
+		public void testDarValorVentas() {
+			
+			int valorEsperado = 123123; //Valor arbitrario
+			assertEquals(valorEsperado, categoria.darValorVentas());		
+		}
+		
+		@Test //Se retornara null debido a que se quiere eliminar un nodo inexistente
+		//Esto provocara que el test de un caso fallido
+		public void testEliminarNodo() {
+			String pIdExistente = "INEXISTENTE";
+	
+			assertNotNull(categoria.eliminarNodo(pIdExistente));
+		}
+		
+		@Test //Se retornara un producto null ya que el id ingresado no existe o no ha sido cargado
+		//Esto provocara que el test de un caso fallido
+		public void testBuscarProducto() {
+	
+			String pIdProductoExist = "INEXISTENTE"; 
+			assertNotNull(categoria.buscarProducto(pIdProductoExist));
+			
+		}
+		
+		@Test // Se retornara null ya que el ID ingresado es la raiz y por lo tanto su padre es nulo
+		//Esto provocara que el test de un caso fallido
+		public void testBuscarPadre() {
+			String pIdPadreExist = "111"; //Nodo raiz (Televisores)
+			assertNotNull(categoria.buscarPadre(pIdPadreExist));
+		}
+		
+		@Test //El numero de productos cargado desde el archivo de pruebas no concordara con el numero con el que se compara
+		//Esto provocara que el test de un caso fallido
+		public void testDarProductos() {
+			int numProductosCargados = 555;
+			assertEquals(numProductosCargados, categoria.darProductos().size());
+		}
+		
+		@Test //El numero de marcas cargadas desde el archivo de pruebas no concordara con el numero con el que se compara
+		//Esto provocara que el test de un caso fallido
+		public void testDarMarcas() {
+			int numMarcas = 555;
+			assertEquals(numMarcas, categoria.darMarcas().size());
+		}
+		
+		@Test //La lista esperada con la cual se compara no concuerda con la lista ordenada en Preorden
+		//Esto provocara que el test de un caso fallido
+		public void testDarPreorden() {
+			
+			List<String> listaEsperada = new ArrayList<String>();
+			listaEsperada.add("SAMSUNG");
+			listaEsperada.add("LG");
+			listaEsperada.add("Televisores");
+			
+			List<NodoAlmacen> listaReal = categoria.darPreorden();
+			
+			int count = 0;
+			for(NodoAlmacen nodo : listaReal) {
+				String nombre_nodo = nodo.darNombre();
+				assertEquals(listaEsperada.get(count), nombre_nodo);
+				count+=1;
+			}
+		}
+		
+		@Test //La lista esperada con la cual se compara no concuerda con la lista ordenada en Posorden
+		//Esto provocara que el test de un caso fallido
+		public void testDarPosorden() {
+	
+			List<String> listaEsperada = new ArrayList<String>();
+			listaEsperada.add("Televisores");
+			listaEsperada.add("LG");
+			listaEsperada.add("SAMSUNG");
+	
+			
+			List<NodoAlmacen> listaReal = categoria.darPosorden();
+			
+			int count = 0;
+			for(NodoAlmacen nodo : listaReal) {
+				String nombre_nodo = nodo.darNombre();
+				assertEquals(listaEsperada.get(count), nombre_nodo);
+				count+=1;
+			}
+			
+			
+		}
+	}
+	
 	@Nested //Test adicionales que se aseguran que la todo el proceso sea exitoso
 	class AdicionalTest{
 		
